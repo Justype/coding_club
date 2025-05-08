@@ -1,0 +1,202 @@
+---
+title: "Getting Started with R and the tidyverse"
+subtitle: "Code Club of Houlahan Lab, Han Lab, and Koenig Lab"
+format: 
+    revealjs: 
+        theme: default # simple
+        embed-resources: true
+        slide-number: true
+        transition: fade
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+## Common datatypes in R
+
+- **Vector**: A sequence of data elements of the same basic type. Can be `numeric`, `character`, or `logical`.
+- **Matrix**: A 2-dimensional array where each element is of the same type.
+- **List**: An ordered collection of objects. Lists can contain different types of data.
+- **Data frame**: A table or 2-dimensional array-like structure where each column can contain different types of data (numeric, character, etc.).
+
+## Vectors
+
+:::: {.columns}
+
+::: {.column width="60%"}
+- is a sequence of data elements of the same basic type. 
+- can be connected using the `c()`
+
+```{r}
+is.vector(1) # even if a single number
+1:5
+c("apple", "banana", "cherry")
+1:5 > 3
+```
+:::
+
+::: {.column width="40%"}
+![](https://adv-r.hadley.nz/diagrams/vectors/summary-tree-s3-1.png)
+:::
+
+::::
+
+## Subsetting Vectors
+
+index is 1-based
+
+```{r}
+x <- seq(2, 10, by = 2) # 2, 4, 6, 8, 10
+x
+x[1] # first element
+x[2:4] # second to fourth elements
+x[x > 5] # elements greater than 3
+```
+
+<!-- ## List -->
+
+<!-- :::: {.columns} -->
+
+<!-- ::: {.column width="70%"} -->
+<!-- - is an ordered collection of objects. -->
+<!-- - can contain **different types** of data. -->
+<!-- - Created using `list()` -->
+
+<!-- ```{r} -->
+<!-- state_markers <- list( -->
+<!--   state1 = c("gene10", "gene40"), -->
+<!--   state2 = c("gene30", "gene50"), -->
+<!--   state3 = c("gene20", "gene60") -->
+<!-- ) -->
+<!-- ``` -->
+<!-- ::: -->
+
+<!-- ::: {.column width="30%"} -->
+<!-- ![](https://adv-r.hadley.nz/diagrams/vectors/summary-tree-s3-2.png) -->
+
+<!-- ```{r} -->
+<!-- #| echo: false -->
+<!-- state_markers -->
+<!-- ``` -->
+<!-- ::: -->
+
+<!-- :::: -->
+
+<!-- --- -->
+
+## Data Frames
+
+- A data frame is a table where each column can contain different types of data (numeric, character, etc.).
+- Most common data for dataset
+- Can be created using `data.frame()`
+- Data frame is actually a list of vectors of the same length.
+
+::::{.columns}
+
+::: {.column width="60%"}
+```{.r}
+df <- data.frame(
+  gene = c("gene1", "gene2", "gene3"),
+  control = c(10, 5, 7),
+  treatment = c(14, 4, 8)
+)
+df <- column_to_rownames(df, "gene")
+```
+:::
+
+::: {.column width="40%"}
+```{r}
+#| echo: false
+df <- data.frame(
+  gene = c("gene1", "gene2", "gene3"),
+  control = c(10, 5, 7),
+  treatment = c(14, 4, 8)
+)
+df <- column_to_rownames(df, "gene")
+df
+```
+:::
+
+::::
+
+---
+
+## Retrive data from data frame {.smaller}
+
+- Use `$<name>` or `[["<name>"]]` to access a column by name.
+- Use `data[<row>, <column>]` to access a specific cell/row/column.
+
+::::{.columns}
+
+::: {.column width="50%"}
+```{r}
+df["control"]   # return a data frame
+df[1]
+df[["control"]] # return a vector
+df[[1]]
+df$control      # return a vector
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+df["gene2", ]
+df[2, ]
+df["gene2", "treatment"]
+df[2, 2]
+```
+:::
+
+::::
+
+
+## Tidyverse: a collection of R packages
+
+:::: {.columns}
+
+::: {.column width="70%"}
+
+- **tibble**: A modern take on data frames
+- **dplyr**: Data manipulation
+- **readr**: Data IO
+- **tidyr**: Data tidying
+- ~~**stringr**: String manipulation~~
+- ~~**ggplot2**: Data visualization~~
+- ~~**purrr**: Functional programming~~
+
+:::
+
+::: {.column width="30%"}
+
+![](https://tidyverse.tidyverse.org/logo.png)
+
+[Posit Cheatsheets](https://posit.co/resources/cheatsheets/)
+
+:::
+
+::::
+
+## Readr: File Input/Output
+
+- `read_csv()`: Read a CSV file into a data frame.
+  - local file or URL
+  - `read_tsv()`: tab-separated; `read_csv2()`: semi-colon separated
+- `write_csv()`: Write a data frame to a CSV file.
+
+Other packages: `readxl` (Excel), `googleSheets4`
+
+```{.r}
+read_tsv("experiment1_wilcox_results.tsv")
+
+exp1_wilcox <- read_csv("https://raw.githubusercontent.com/Justype/coding_club/refs/heads/main/resources/mock_gene_expression/experiment1_wilcox_results.csv")
+```
+
+```{r}
+#| echo: false
+exp1_wilcox <- read_csv("https://raw.githubusercontent.com/Justype/coding_club/refs/heads/main/resources/mock_gene_expression/experiment1_wilcox_results.csv")
+```
+
+# Thank you!
