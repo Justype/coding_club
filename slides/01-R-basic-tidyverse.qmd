@@ -4,10 +4,12 @@ subtitle: "Code Club of Houlahan Lab, Han Lab, and Koenig Lab"
 format: 
     revealjs: 
         theme: default # simple
-        embed-resources: true
+        # embed-resources: true # chalkboard cannot work with embed-resources
         slide-number: true
+        chalkboard: true
         transition: fade
 ---
+
 
 ```{r setup, include=FALSE}
 library(tidyverse)
@@ -24,25 +26,42 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 ## Vectors
 
-:::: {.columns}
+::::: {.columns}
 
-::: {.column width="60%"}
+:::: {.column width="60%"}
 - is a sequence of data elements of the same basic type. 
 - can be connected using the `c()`
 
+::: {.fragment .fade-in}
 ```{r}
 is.vector(1) # even if a single number
-1:5
-c("apple", "banana", "cherry")
-1:5 > 3
 ```
 :::
 
-::: {.column width="40%"}
-![](https://adv-r.hadley.nz/diagrams/vectors/summary-tree-s3-1.png)
+::: {.fragment .fade-in}
+```{r}
+1:5 # numbers are double unless using `L` 5L
+```
 :::
 
+::: {.fragment .fade-in}
+```{r}
+c("apple", "banana", "cherry")
+```
+:::
+
+::: {.fragment .fade-in}
+```{r}
+1:5 > 3
+```
+:::
 ::::
+
+:::: {.column width="40%"}
+![*Advanced R* Chapter 3 Vector](https://adv-r.hadley.nz/diagrams/vectors/summary-tree-s3-1.png)
+::::
+
+:::::
 
 ## Subsetting Vectors
 
@@ -51,71 +70,130 @@ index is 1-based
 ```{r}
 x <- seq(2, 10, by = 2) # 2, 4, 6, 8, 10
 x
-x[1] # first element
-x[2:4] # second to fourth elements
-x[x > 5] # elements greater than 3
 ```
 
-<!-- ## List -->
+::: {.fragment .fade-in}
+```{r}
+x[1] # first element
+```
+:::
 
-<!-- :::: {.columns} -->
+::: {.fragment .fade-in style="font-size:0.8em"}
+Remember vector is the very basic data in R. We actually use vector to subset.
+:::
 
-<!-- ::: {.column width="70%"} -->
-<!-- - is an ordered collection of objects. -->
-<!-- - can contain **different types** of data. -->
-<!-- - Created using `list()` -->
+::: {.fragment .fade-in}
+```{r}
+x[2:4] # second to fourth elements
+```
+:::
 
-<!-- ```{r} -->
-<!-- state_markers <- list( -->
-<!--   state1 = c("gene10", "gene40"), -->
-<!--   state2 = c("gene30", "gene50"), -->
-<!--   state3 = c("gene20", "gene60") -->
-<!-- ) -->
-<!-- ``` -->
-<!-- ::: -->
+::: {.fragment .fade-in}
+```{r}
+# x > 5  # FALSE FALSE TRUE TRUE TRUE
+x[x > 5] # elements greater than 5
+```
+:::
 
-<!-- ::: {.column width="30%"} -->
-<!-- ![](https://adv-r.hadley.nz/diagrams/vectors/summary-tree-s3-2.png) -->
+## List
 
-<!-- ```{r} -->
-<!-- #| echo: false -->
-<!-- state_markers -->
-<!-- ``` -->
-<!-- ::: -->
+:::: {.columns}
+::: {.column width="70%"} 
 
-<!-- :::: -->
+- is an ordered collection of objects.
+- can contain **different types** of data.
+- Created using `list()`
+- Data frame is a special type of list.
+:::
 
-<!-- --- -->
+::: {.column width="30%"}
+![](https://adv-r.hadley.nz/diagrams/vectors/summary-tree-s3-2.png)
+:::
+::::
 
-## Data Frames
+:::: {.columns}
+::: {.column width="70%"}
+```{r}
+cell_markers <- list( 
+  type1 = c("gene10", "gene40"),
+  type2 = c("gene30", "gene50"),
+  type3 = c("gene20", "gene60")
+)
+```
+:::
 
+::: {.column width="30%"}
+
+```{r}
+#| echo: false
+cell_markers
+```
+:::
+::::
+
+## Subsetting List
+
+::::: {.columns}
+:::: {.column width="70%"}
+- `[<index>]` or `["<name>"]` to sublist.
+- `$<name>`, `[["<name>"]]` or `[[index]]` to access a element.
+
+::: {.fragment .fade-in style="padding-bottom: 0.5em"}
+```{.r}
+cell_markers[c(1,3)] # return a sublist
+cell_markers[c("type1", "type3")]
+```
+```{r}
+#| echo: false
+cell_markers[c("type1", "type3")]
+```
+:::
+
+::: {.fragment .fade-in}
+```{.r}
+cell_markers$type1 # return a vector
+cell_markers[["type1"]]
+cell_markers[[1]]
+```
+```{r}
+#| echo: false
+cell_markers$type1
+```
+:::
+::::
+
+:::: {.column width="30%"}
+```{r}
+cell_markers
+```
+::::
+:::::
+
+## Data Frames/Tibble
+
+::: {.incremental}
 - A data frame is a table where each column can contain different types of data (numeric, character, etc.).
-- Most common data for dataset
-- Can be created using `data.frame()`
+- Can be created using `data.frame()`, `read.csv()`, ...
 - Data frame is actually a list of vectors of the same length.
+:::
 
-::::{.columns}
+::::{.columns .fragment .fade-in}
 
 ::: {.column width="60%"}
-```{.r}
-df <- data.frame(
+```{r}
+df <- tibble(
   gene = c("gene1", "gene2", "gene3"),
   control = c(10, 5, 7),
   treatment = c(14, 4, 8)
 )
 df <- column_to_rownames(df, "gene")
+c(is.list(df), is.data.frame(df))
 ```
 :::
 
 ::: {.column width="40%"}
 ```{r}
 #| echo: false
-df <- data.frame(
-  gene = c("gene1", "gene2", "gene3"),
-  control = c(10, 5, 7),
-  treatment = c(14, 4, 8)
-)
-df <- column_to_rownames(df, "gene")
 df
 ```
 :::
@@ -124,34 +202,54 @@ df
 
 ---
 
-## Retrive data from data frame {.smaller}
+## Retrive Column from data frame
 
-- Use `$<name>` or `[["<name>"]]` to access a column by name.
-- Use `data[<row>, <column>]` to access a specific cell/row/column.
+Remember the list? Data frame is a special type of list.
 
-::::{.columns}
-
-::: {.column width="50%"}
+::: {.fragment .fade-in}
+- `$<name>`, `[["<name>"]]` or `[[<index>]]` to access a column.
 ```{r}
-df["control"]   # return a data frame
-df[1]
-df[["control"]] # return a vector
+df
+```
+:::
+
+::: {.fragment .fade-in}
+How to access the `control` column?
+:::
+
+::: {.fragment .fade-in}
+```{.r}
+df[["control"]]
 df[[1]]
-df$control      # return a vector
+df$control
 ```
 :::
 
-::: {.column width="50%"}
+## Subsetting Data Frame {.smaller}
+
+- `df[<column>]` to subset by column.
+- `df[<row>, <column>]` to subset or access a cell.
+
+::::: {.columns}
+:::: {.column width="50%"}
 ```{r}
-df["gene2", ]
-df[2, ]
-df["gene2", "treatment"]
-df[2, 2]
+df[, "control"]
+df["control"]
+```
+::: {.fragment .fade-in}
+```{r}
+
 ```
 :::
-
 ::::
+:::: {.column width="50%"}
 
+::: {.fragment .fade-in}
+Leave it blank to access all.
+
+:::
+::::
+:::::
 
 ## Tidyverse: a collection of R packages
 
