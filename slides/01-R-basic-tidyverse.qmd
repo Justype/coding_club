@@ -19,10 +19,12 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 ## Common datatypes in R
 
+::: {.incremental}
 - **Vector**: A sequence of data elements of the same basic type. Can be `numeric`, `character`, or `logical`.
 - **Matrix**: A 2-dimensional array where each element is of the same type.
 - **List**: An ordered collection of objects. Lists can contain different types of data.
 - **Data frame**: A table or 2-dimensional array-like structure where each column can contain different types of data (numeric, character, etc.).
+:::
 
 ## Vectors
 
@@ -175,78 +177,72 @@ cell_markers
 - A data frame is a table where each column can contain different types of data (numeric, character, etc.).
 - Can be created using `data.frame()`, `read.csv()`, ...
 - Data frame is actually a list of vectors of the same length.
+- ***Tibble*** is a modern data frame. (rownames are not allowed)
 :::
 
 ::::{.columns .fragment .fade-in}
 
 ::: {.column width="60%"}
 ```{r}
-df <- tibble(
+tb <- tibble(
   gene = c("gene1", "gene2", "gene3"),
   control = c(10, 5, 7),
   treatment = c(14, 4, 8)
 )
-df <- column_to_rownames(df, "gene")
-c(is.list(df), is.data.frame(df))
+c(is.list(tb), is.data.frame(tb), is_tibble(tb))
 ```
 :::
 
 ::: {.column width="40%"}
 ```{r}
 #| echo: false
-df
+tb
 ```
 :::
 
 ::::
 
----
+## Retrieve Column from Tibble
 
-## Retrive Column from data frame
+Remember the list? Tibble is a special type of list.
 
-Remember the list? Data frame is a special type of list.
-
-::: {.fragment .fade-in}
+::: {.incremental}
 - `$<name>`, `[["<name>"]]` or `[[<index>]]` to access a column.
+:::
+
+::::: {.columns}
+
+:::: {.column width="50%"}
+::: {.fragment .fade-in}
 ```{r}
-df
+tb
 ```
 :::
 
-::: {.fragment .fade-in}
+::: {.fragment .fade-in style="font-size: 0.8em"}
 How to access the `control` column?
 :::
 
 ::: {.fragment .fade-in}
 ```{.r}
-df[["control"]]
-df[[1]]
-df$control
+tb[["control"]]
+tb[[2]]
+tb$control
 ```
-:::
-
-## Subsetting Data Frame {.smaller}
-
-- `df[<column>]` to subset by column.
-- `df[<row>, <column>]` to subset or access a cell.
-
-::::: {.columns}
-:::: {.column width="50%"}
 ```{r}
-df[, "control"]
-df["control"]
-```
-::: {.fragment .fade-in}
-```{r}
-
+#| echo: false
+tb[["control"]]
 ```
 :::
 ::::
+
 :::: {.column width="50%"}
+::: {.fragment .fade-in}
+What about subsetting?
+:::
 
 ::: {.fragment .fade-in}
-Leave it blank to access all.
-
+Use [Dplyr](https://dplyr.tidyverse.org/) to do it.
 :::
 ::::
 :::::
@@ -260,9 +256,9 @@ Leave it blank to access all.
 - **tibble**: A modern take on data frames
 - **dplyr**: Data manipulation
 - **readr**: Data IO
-- **tidyr**: Data tidying
-- ~~**stringr**: String manipulation~~
+- ~~**tidyr**: Data tidying (long vs wide format)~~
 - ~~**ggplot2**: Data visualization~~
+- ~~**stringr**: String manipulation~~
 - ~~**purrr**: Functional programming~~
 
 :::
@@ -271,8 +267,15 @@ Leave it blank to access all.
 
 ![](https://tidyverse.tidyverse.org/logo.png)
 
+::: {style="font-size: 0.7em"}
 [Posit Cheatsheets](https://posit.co/resources/cheatsheets/)
 
+- [Dplyr](https://rstudio.github.io/cheatsheets/html/data-transformation.html)
+- [ggplot2](https://rstudio.github.io/cheatsheets/html/data-visualization.html)
+- [forcats(factor)](https://rstudio.github.io/cheatsheets/html/factors.html)
+- [R Markdown](https://rstudio.github.io/cheatsheets/html/rmarkdown.html)
+- [purrr](https://rstudio.github.io/cheatsheets/html/purrr.html)
+:::
 :::
 
 ::::
@@ -281,7 +284,7 @@ Leave it blank to access all.
 
 - `read_csv()`: Read a CSV file into a data frame.
   - local file or URL
-  - `read_tsv()`: tab-separated; `read_csv2()`: semi-colon separated
+  - `read_tsv()`: tab-separated
 - `write_csv()`: Write a data frame to a CSV file.
 
 Other packages: `readxl` (Excel), `googleSheets4`
@@ -289,12 +292,124 @@ Other packages: `readxl` (Excel), `googleSheets4`
 ```{.r}
 read_tsv("experiment1_wilcox_results.tsv")
 
-exp1_wilcox <- read_csv("https://raw.githubusercontent.com/Justype/coding_club/refs/heads/main/resources/mock_gene_expression/experiment1_wilcox_results.csv")
+result_wilcox <- read_csv("https://raw.githubusercontent.com/Justype/coding_club/refs/heads/main/resources/mock_gene_expression/experiment1_wilcox_results.csv")
 ```
 
+## Experiment Result
+
+Four columns
+
+:::: {.columns}
+::: {.column width="50%"}
+- `Gene`: gene name
+- `log2FC`: log2 fold change
+:::
+::: {.column width="50%"}
+- `p.val`: p-value
+- `p.adj`: FDR adjusted p-value
+:::
+::::
+
 ```{r}
-#| echo: false
-exp1_wilcox <- read_csv("https://raw.githubusercontent.com/Justype/coding_club/refs/heads/main/resources/mock_gene_expression/experiment1_wilcox_results.csv")
+result <- read_csv("https://raw.githubusercontent.com/Justype/coding_club/refs/heads/main/resources/mock_gene_expression/experiment1_log_t_results.csv")
+head(result)
 ```
+
+## Pipe `%>%` or `|>` {.smaller}
+
+- Pipe operator is used to pass the result of one function to the next function.
+- `%>%` is a pipe from `tidyverse`. `|>` is a native pipe in R 4.1.0+.
+
+Goal: Get the top 3 genes which have significant p-value and high log2 fold change.
+
+Without pipe:
+
+```{r}
+result_filtered <- filter(result, p.adj < 0.05)
+result_filtered <- arrange(result_filtered, desc(log2FC))
+result_top3 <- head(result_filtered, 3)
+```
+
+Nested functions:
+
+```{r}
+result_top3 <- head(arrange(filter(result, p.adj < 0.05), desc(log2FC)), 3)
+```
+
+With pipe:
+
+```{r}
+result %>%
+  filter(p.adj < 0.05) %>%
+  arrange(desc(log2FC)) %>%
+  head(3) -> result_top3
+```
+
+## Dplyr: Data Manipulation
+
+- `filter()`: Subset rows based on conditions.
+- `select()`: Subset columns.
+- `mutate()`: Add new columns or modify existing ones.
+- `arrange()`: Sort rows. (`desc()` for descending order)
+- `group_by()`: Group data by one or more variables.
+- `summarise()`: Summarize data (e.g., mean, median).
+- `join()`: Combine data frames based on common columns.
+
+## Get Significant Upregulated Genes
+
+:::: {.columns}
+::: {.column width="50%"}
+- `Gene`: gene name
+- `log2FC`: log2 fold change
+:::
+::: {.column width="50%"}
+- `p.val`: p-value
+- `p.adj`: FDR adjusted p-value
+:::
+::::
+
+```{r}
+result %>%
+  filter(p.adj < 0.05, log2FC > 0) %>%
+  arrange(desc(log2FC)) %>%
+  pull(Gene)
+```
+
+## Compare results from two test
+
+:::: {.columns}
+::: {.column width="50%"}
+Wilcox test
+```{r}
+result_wilcox <- read_csv("https://raw.githubusercontent.com/Justype/coding_club/refs/heads/main/resources/mock_gene_expression/experiment1_wilcox_results.csv")
+
+result_wilcox %>%
+  filter(p.adj < 0.05) %>%
+  arrange(desc(log2FC)) %>%
+  pull(Gene) -> wilcox_genes
+
+wilcox_genes
+```
+:::
+::: {.column width="50%"}
+t test on log scale
+```{r}
+result_t <- read_csv("https://raw.githubusercontent.com/Justype/coding_club/refs/heads/main/resources/mock_gene_expression/experiment1_log_t_results.csv")
+result_t %>%
+  filter(p.adj < 0.05) %>%
+  arrange(desc(log2FC)) %>%
+  pull(Gene) -> t_genes
+
+t_genes
+```
+:::
+::::
+
+::: {.fragment .fade-in style="font-size: 0.8em"}
+- The mock data is generated from negative binomial distribution.
+- Every 20th gene has different mean and variance between treatment and control groups.
+
+Wilcoxon test does not have enough power to detect the difference.
+:::
 
 # Thank you!

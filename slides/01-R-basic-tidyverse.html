@@ -204,10 +204,10 @@
 <section id="common-datatypes-in-r" class="slide level2">
 <h2>Common datatypes in R</h2>
 <ul>
-<li><strong>Vector</strong>: A sequence of data elements of the same basic type. Can be <code>numeric</code>, <code>character</code>, or <code>logical</code>.</li>
-<li><strong>Matrix</strong>: A 2-dimensional array where each element is of the same type.</li>
-<li><strong>List</strong>: An ordered collection of objects. Lists can contain different types of data.</li>
-<li><strong>Data frame</strong>: A table or 2-dimensional array-like structure where each column can contain different types of data (numeric, character, etc.).</li>
+<li class="fragment"><strong>Vector</strong>: A sequence of data elements of the same basic type. Can be <code>numeric</code>, <code>character</code>, or <code>logical</code>.</li>
+<li class="fragment"><strong>Matrix</strong>: A 2-dimensional array where each element is of the same type.</li>
+<li class="fragment"><strong>List</strong>: An ordered collection of objects. Lists can contain different types of data.</li>
+<li class="fragment"><strong>Data frame</strong>: A table or 2-dimensional array-like structure where each column can contain different types of data (numeric, character, etc.).</li>
 </ul>
 </section>
 <section id="vectors" class="slide level2">
@@ -388,85 +388,74 @@ $type3
 <li class="fragment">A data frame is a table where each column can contain different types of data (numeric, character, etc.).</li>
 <li class="fragment">Can be created using <code>data.frame()</code>, <code>read.csv()</code>, …</li>
 <li class="fragment">Data frame is actually a list of vectors of the same length.</li>
+<li class="fragment"><strong><em>Tibble</em></strong> is a modern data frame. (rownames are not allowed)</li>
 </ul>
 <div class="columns fragment fade-in">
 <div class="column" style="width:60%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a>tb <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
 <span id="cb25-2"><a href=""></a>  <span class="at">gene =</span> <span class="fu">c</span>(<span class="st">"gene1"</span>, <span class="st">"gene2"</span>, <span class="st">"gene3"</span>),</span>
 <span id="cb25-3"><a href=""></a>  <span class="at">control =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">7</span>),</span>
 <span id="cb25-4"><a href=""></a>  <span class="at">treatment =</span> <span class="fu">c</span>(<span class="dv">14</span>, <span class="dv">4</span>, <span class="dv">8</span>)</span>
 <span id="cb25-5"><a href=""></a>)</span>
-<span id="cb25-6"><a href=""></a>df <span class="ot">&lt;-</span> <span class="fu">column_to_rownames</span>(df, <span class="st">"gene"</span>)</span>
-<span id="cb25-7"><a href=""></a><span class="fu">c</span>(<span class="fu">is.list</span>(df), <span class="fu">is.data.frame</span>(df))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb25-6"><a href=""></a><span class="fu">c</span>(<span class="fu">is.list</span>(tb), <span class="fu">is.data.frame</span>(tb), <span class="fu">is_tibble</span>(tb))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] TRUE TRUE</code></pre>
+<pre><code>[1] TRUE TRUE TRUE</code></pre>
 </div>
 </div>
 </div><div class="column" style="width:40%;">
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>      control treatment
-gene1      10        14
-gene2       5         4
-gene3       7         8</code></pre>
+<pre><code># A tibble: 3 × 3
+  gene  control treatment
+  &lt;chr&gt;   &lt;dbl&gt;     &lt;dbl&gt;
+1 gene1      10        14
+2 gene2       5         4
+3 gene3       7         8</code></pre>
 </div>
 </div>
 </div></div>
 </section>
-<section id="retrive-column-from-data-frame" class="slide level2">
-<h2>Retrive Column from data frame</h2>
-<p>Remember the list? Data frame is a special type of list.</p>
-<div class="fragment fade-in">
+<section id="retrieve-column-from-tibble" class="slide level2">
+<h2>Retrieve Column from Tibble</h2>
+<p>Remember the list? Tibble is a special type of list.</p>
 <ul>
-<li><code>$&lt;name&gt;</code>, <code>[["&lt;name&gt;"]]</code> or <code>[[&lt;index&gt;]]</code> to access a column.</li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>      control treatment
-gene1      10        14
-gene2       5         4
-gene3       7         8</code></pre>
-</div>
-</div>
-</div>
-<div class="fragment fade-in">
-<p>How to access the <code>control</code> column?</p>
-</div>
-<div class="fragment fade-in">
-<div class="sourceCode" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a>df[[<span class="st">"control"</span>]]</span>
-<span id="cb30-2"><a href=""></a>df[[<span class="dv">1</span>]]</span>
-<span id="cb30-3"><a href=""></a>df<span class="sc">$</span>control</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="subsetting-data-frame" class="slide level2 smaller">
-<h2>Subsetting Data Frame</h2>
-<ul>
-<li><code>df[&lt;column&gt;]</code> to subset by column.</li>
-<li><code>df[&lt;row&gt;, &lt;column&gt;]</code> to subset or access a cell.</li>
+<li class="fragment"><code>$&lt;name&gt;</code>, <code>[["&lt;name&gt;"]]</code> or <code>[[&lt;index&gt;]]</code> to access a column.</li>
 </ul>
 <div class="columns">
 <div class="column" style="width:50%;">
+<div class="fragment fade-in">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href=""></a>df[, <span class="st">"control"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a>tb</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  gene  control treatment
+  &lt;chr&gt;   &lt;dbl&gt;     &lt;dbl&gt;
+1 gene1      10        14
+2 gene2       5         4
+3 gene3       7         8</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment fade-in" style="font-size: 0.8em">
+<p>How to access the <code>control</code> column?</p>
+</div>
+<div class="fragment fade-in">
+<div class="sourceCode" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a>tb[[<span class="st">"control"</span>]]</span>
+<span id="cb30-2"><a href=""></a>tb[[<span class="dv">2</span>]]</span>
+<span id="cb30-3"><a href=""></a>tb<span class="sc">$</span>control</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 10  5  7</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href=""></a>df[<span class="st">"control"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>      control
-gene1      10
-gene2       5
-gene3       7</code></pre>
 </div>
-</div>
-<div class="fragment fade-in">
-
 </div>
 </div><div class="column" style="width:50%;">
 <div class="fragment fade-in">
-<p>Leave it blank to access all.</p>
+<p>What about subsetting?</p>
+</div>
+<div class="fragment fade-in">
+<p>Use <a href="https://dplyr.tidyverse.org/">Dplyr</a> to do it.</p>
 </div>
 </div></div>
 </section>
@@ -478,14 +467,23 @@ gene3       7</code></pre>
 <li><strong>tibble</strong>: A modern take on data frames</li>
 <li><strong>dplyr</strong>: Data manipulation</li>
 <li><strong>readr</strong>: Data IO</li>
-<li><strong>tidyr</strong>: Data tidying</li>
-<li><del><strong>stringr</strong>: String manipulation</del></li>
+<li><del><strong>tidyr</strong>: Data tidying (long vs wide format)</del></li>
 <li><del><strong>ggplot2</strong>: Data visualization</del></li>
+<li><del><strong>stringr</strong>: String manipulation</del></li>
 <li><del><strong>purrr</strong>: Functional programming</del></li>
 </ul>
 </div><div class="column" style="width:30%;">
 <p><img data-src="https://tidyverse.tidyverse.org/logo.png"></p>
+<div style="font-size: 0.7em">
 <p><a href="https://posit.co/resources/cheatsheets/">Posit Cheatsheets</a></p>
+<ul>
+<li><a href="https://rstudio.github.io/cheatsheets/html/data-transformation.html">Dplyr</a></li>
+<li><a href="https://rstudio.github.io/cheatsheets/html/data-visualization.html">ggplot2</a></li>
+<li><a href="https://rstudio.github.io/cheatsheets/html/factors.html">forcats(factor)</a></li>
+<li><a href="https://rstudio.github.io/cheatsheets/html/rmarkdown.html">R Markdown</a></li>
+<li><a href="https://rstudio.github.io/cheatsheets/html/purrr.html">purrr</a></li>
+</ul>
+</div>
 </div></div>
 </section>
 <section id="readr-file-inputoutput" class="slide level2">
@@ -494,14 +492,148 @@ gene3       7</code></pre>
 <li><code>read_csv()</code>: Read a CSV file into a data frame.
 <ul>
 <li>local file or URL</li>
-<li><code>read_tsv()</code>: tab-separated; <code>read_csv2()</code>: semi-colon separated</li>
+<li><code>read_tsv()</code>: tab-separated</li>
 </ul></li>
 <li><code>write_csv()</code>: Write a data frame to a CSV file.</li>
 </ul>
 <p>Other packages: <code>readxl</code> (Excel), <code>googleSheets4</code></p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href=""></a><span class="fu">read_tsv</span>(<span class="st">"experiment1_wilcox_results.tsv"</span>)</span>
-<span id="cb35-2"><a href=""></a></span>
-<span id="cb35-3"><a href=""></a>exp1_wilcox <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/Justype/coding_club/refs/heads/main/resources/mock_gene_expression/experiment1_wilcox_results.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a><span class="fu">read_tsv</span>(<span class="st">"experiment1_wilcox_results.tsv"</span>)</span>
+<span id="cb32-2"><a href=""></a></span>
+<span id="cb32-3"><a href=""></a>result_wilcox <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/Justype/coding_club/refs/heads/main/resources/mock_gene_expression/experiment1_wilcox_results.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="experiment-result" class="slide level2">
+<h2>Experiment Result</h2>
+<p>Four columns</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li><code>Gene</code>: gene name</li>
+<li><code>log2FC</code>: log2 fold change</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<ul>
+<li><code>p.val</code>: p-value</li>
+<li><code>p.adj</code>: FDR adjusted p-value</li>
+</ul>
+</div></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href=""></a>result <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/Justype/coding_club/refs/heads/main/resources/mock_gene_expression/experiment1_log_t_results.csv"</span>)</span>
+<span id="cb33-2"><a href=""></a><span class="fu">head</span>(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+  Gene      log2FC      p.val    p.adj
+  &lt;chr&gt;      &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;
+1 Gene1   -0.194   0.0793     0.592   
+2 Gene10   0.00489 0.917      0.988   
+3 Gene100  1.60    0.00000279 0.000207
+4 Gene101 -0.0890  0.428      0.938   
+5 Gene102  0.00518 0.971      0.988   
+6 Gene103  0.168   0.259      0.878   </code></pre>
+</div>
+</div>
+</section>
+<section id="pipe-or" class="slide level2 smaller">
+<h2>Pipe <code>%&gt;%</code> or <code>|&gt;</code></h2>
+<ul>
+<li>Pipe operator is used to pass the result of one function to the next function.</li>
+<li><code>%&gt;%</code> is a pipe from <code>tidyverse</code>. <code>|&gt;</code> is a native pipe in R 4.1.0+.</li>
+</ul>
+<p>Goal: Get the top 3 genes which have significant p-value and high log2 fold change.</p>
+<p>Without pipe:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href=""></a>result_filtered <span class="ot">&lt;-</span> <span class="fu">filter</span>(result, p.adj <span class="sc">&lt;</span> <span class="fl">0.05</span>)</span>
+<span id="cb35-2"><a href=""></a>result_filtered <span class="ot">&lt;-</span> <span class="fu">arrange</span>(result_filtered, <span class="fu">desc</span>(log2FC))</span>
+<span id="cb35-3"><a href=""></a>result_top3 <span class="ot">&lt;-</span> <span class="fu">head</span>(result_filtered, <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Nested functions:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href=""></a>result_top3 <span class="ot">&lt;-</span> <span class="fu">head</span>(<span class="fu">arrange</span>(<span class="fu">filter</span>(result, p.adj <span class="sc">&lt;</span> <span class="fl">0.05</span>), <span class="fu">desc</span>(log2FC)), <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>With pipe:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href=""></a>result <span class="sc">%&gt;%</span></span>
+<span id="cb37-2"><a href=""></a>  <span class="fu">filter</span>(p.adj <span class="sc">&lt;</span> <span class="fl">0.05</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-3"><a href=""></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(log2FC)) <span class="sc">%&gt;%</span></span>
+<span id="cb37-4"><a href=""></a>  <span class="fu">head</span>(<span class="dv">3</span>) <span class="ot">-&gt;</span> result_top3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="dplyr-data-manipulation" class="slide level2">
+<h2>Dplyr: Data Manipulation</h2>
+<ul>
+<li><code>filter()</code>: Subset rows based on conditions.</li>
+<li><code>select()</code>: Subset columns.</li>
+<li><code>mutate()</code>: Add new columns or modify existing ones.</li>
+<li><code>arrange()</code>: Sort rows. (<code>desc()</code> for descending order)</li>
+<li><code>group_by()</code>: Group data by one or more variables.</li>
+<li><code>summarise()</code>: Summarize data (e.g., mean, median).</li>
+<li><code>join()</code>: Combine data frames based on common columns.</li>
+</ul>
+</section>
+<section id="get-significant-upregulated-genes" class="slide level2">
+<h2>Get Significant Upregulated Genes</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li><code>Gene</code>: gene name</li>
+<li><code>log2FC</code>: log2 fold change</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<ul>
+<li><code>p.val</code>: p-value</li>
+<li><code>p.adj</code>: FDR adjusted p-value</li>
+</ul>
+</div></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href=""></a>result <span class="sc">%&gt;%</span></span>
+<span id="cb38-2"><a href=""></a>  <span class="fu">filter</span>(p.adj <span class="sc">&lt;</span> <span class="fl">0.05</span>, log2FC <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb38-3"><a href=""></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(log2FC)) <span class="sc">%&gt;%</span></span>
+<span id="cb38-4"><a href=""></a>  <span class="fu">pull</span>(Gene)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Gene20"  "Gene60"  "Gene100" "Gene40" </code></pre>
+</div>
+</div>
+</section>
+<section id="compare-results-from-two-test" class="slide level2">
+<h2>Compare results from two test</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Wilcox test</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href=""></a>result_wilcox <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/Justype/coding_club/refs/heads/main/resources/mock_gene_expression/experiment1_wilcox_results.csv"</span>)</span>
+<span id="cb40-2"><a href=""></a></span>
+<span id="cb40-3"><a href=""></a>result_wilcox <span class="sc">%&gt;%</span></span>
+<span id="cb40-4"><a href=""></a>  <span class="fu">filter</span>(p.adj <span class="sc">&lt;</span> <span class="fl">0.05</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb40-5"><a href=""></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(log2FC)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-6"><a href=""></a>  <span class="fu">pull</span>(Gene) <span class="ot">-&gt;</span> wilcox_genes</span>
+<span id="cb40-7"><a href=""></a></span>
+<span id="cb40-8"><a href=""></a>wilcox_genes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>character(0)</code></pre>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<p>t test on log scale</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href=""></a>result_t <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/Justype/coding_club/refs/heads/main/resources/mock_gene_expression/experiment1_log_t_results.csv"</span>)</span>
+<span id="cb42-2"><a href=""></a>result_t <span class="sc">%&gt;%</span></span>
+<span id="cb42-3"><a href=""></a>  <span class="fu">filter</span>(p.adj <span class="sc">&lt;</span> <span class="fl">0.05</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb42-4"><a href=""></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(log2FC)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-5"><a href=""></a>  <span class="fu">pull</span>(Gene) <span class="ot">-&gt;</span> t_genes</span>
+<span id="cb42-6"><a href=""></a></span>
+<span id="cb42-7"><a href=""></a>t_genes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Gene20"  "Gene60"  "Gene100" "Gene40"  "Gene25"  "Gene140" "Gene200"
+ [8] "Gene180" "Gene160" "Gene120"</code></pre>
+</div>
+</div>
+</div></div>
+<div class="fragment fade-in" style="font-size: 0.8em">
+<ul>
+<li>The mock data is generated from negative binomial distribution.</li>
+<li>Every 20th gene has different mean and variance between treatment and control groups.</li>
+</ul>
+<p>Wilcoxon test does not have enough power to detect the difference.</p>
+</div>
 </section>
 <section id="thank-you" class="title-slide slide level1 center">
 <h1>Thank you!</h1>
